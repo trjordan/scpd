@@ -46,20 +46,24 @@ public class PasswordManager {
     }
 
     public static String getSaltedHash (String pwd, int salt) throws Exception {
-	return null; // LAB_TODO
+	return computeSHA1(Integer.toHexString(salt) + pwd);
     }
 
     public static boolean check(String username, String password) {
 	try {
 	    UserRecord t = (UserRecord)userMap.get(username);
-	    return false; // LAB_TODO: Implement password check
+            String givenPassword = getSaltedHash(password, t.salt);
+	    return givenPassword.equals(t.hpwd);
 	} catch (Exception e) {
+	    System.err.println ("error: " + e);
 	    return false;
 	}
     }
 
     public static int chooseNewSalt() {
-	return -1; // LAB_TODO
+        Random generator = new Random();
+        return generator.nextInt(4096);
+
     }
 
     // This function chooses a salt for the user, computes the salted hash
